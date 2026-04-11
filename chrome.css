@@ -51,6 +51,15 @@ zen-workspace[active] tab:not([zen-glance-tab="true"]) {
     margin: 0;
   }
 
+  /* Hide the second icon when tab is pinned */
+  [zen-pinned-changed='true']:not([zen-essential]) .tab-reset-pin-button image {
+    opacity: 1 !important;
+  }
+  
+  [zen-pinned-changed='true']:not([zen-essential]) .tab-icon-image {
+    opacity: 0 !important;
+  }
+
   /* Show the "X" close button on hover */
   tab:hover .tab-close-button {
     visibility: visible;
