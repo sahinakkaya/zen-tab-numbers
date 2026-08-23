@@ -10,9 +10,9 @@ zen-workspace[active] tab:not([zen-glance-tab="true"]) {
 }
 /* The selected tab is the origin for Vim-style relative numbers. */
 hbox.zen-essentials-container:not([hidden="true"])
-  tab:not([zen-glance-tab="true"]):is([selected="true"], [visuallyselected="true"]),
+  tab:not([zen-glance-tab="true"]):is([selected], [visuallyselected]),
 zen-workspace[active]
-  tab:not([zen-glance-tab="true"]):is([selected="true"], [visuallyselected="true"]) {
+  tab:not([zen-glance-tab="true"]):is([selected], [visuallyselected]) {
   counter-increment: tab-counter;
   counter-set: relative-tab-after 0;
 }
@@ -22,13 +22,13 @@ zen-workspace[active]
  */
 hbox.zen-essentials-container:not([hidden="true"])
   tab:not([zen-glance-tab="true"]):not(zen-folder:has(.tab-group-label[aria-expanded="false"]) tab:not([folder-active="true"])):is(
-    :has(~ :is(tab:is([selected="true"], [visuallyselected="true"]), * tab:is([selected="true"], [visuallyselected="true"]))),
-    *:has(~ :is(tab:is([selected="true"], [visuallyselected="true"]), * tab:is([selected="true"], [visuallyselected="true"]))) tab
+    :has(~ :is(tab:is([selected], [visuallyselected]), * tab:is([selected], [visuallyselected]))),
+    *:has(~ :is(tab:is([selected], [visuallyselected]), * tab:is([selected], [visuallyselected]))) tab
   ),
 zen-workspace[active]
   tab:not([zen-glance-tab="true"]):not(zen-folder:has(.tab-group-label[aria-expanded="false"]) tab:not([folder-active="true"])):is(
-    :has(~ :is(tab:is([selected="true"], [visuallyselected="true"]), * tab:is([selected="true"], [visuallyselected="true"]))),
-    *:has(~ :is(tab:is([selected="true"], [visuallyselected="true"]), * tab:is([selected="true"], [visuallyselected="true"]))) tab
+    :has(~ :is(tab:is([selected], [visuallyselected]), * tab:is([selected], [visuallyselected]))),
+    *:has(~ :is(tab:is([selected], [visuallyselected]), * tab:is([selected], [visuallyselected]))) tab
   ) {
   counter-increment: tab-counter relative-tab-before -1;
 }
@@ -40,9 +40,7 @@ zen-folder:has(.tab-group-label[aria-expanded="false"]) tab:not([folder-active="
 /* Styles when the sidebar is expanded */
 @media (-moz-bool-pref: "zen.view.sidebar-expanded") {
   tab:not([zen-glance-tab="true"]) > .tab-stack > .tab-content::after {
-    content: counter(
-      tab-counter
-    ); /* Space before the number */ /* Positioning and styling */
+    content: var(--tab-number, counter(tab-counter)); /* Space before the number */ /* Positioning and styling */
     font-weight: var(--bold-text, normal);
     font-size: var(--font_size, 80%);
     color: var(--number_color, inherit);
@@ -102,9 +100,7 @@ zen-folder:has(.tab-group-label[aria-expanded="false"]) tab:not([folder-active="
       display: none; /* Hide the ::after pseudo-element first */
     }
     tab:not([zen-glance-tab="true"]) > .tab-stack > .tab-content::before {
-      content: counter(
-        tab-counter
-      ); /* Space before the number */ /* Positioning and styling */
+      content: var(--tab-number, counter(tab-counter)); /* Space before the number */ /* Positioning and styling */
       font-weight: var(--bold-text, normal);
       font-size: var(--font_size, 80%);
       color: var(--number_color, inherit);
@@ -129,7 +125,7 @@ zen-folder:has(.tab-group-label[aria-expanded="false"]) tab:not([folder-active="
 } /* Styles when the sidebar is NOT expanded (compact mode) */
 @media not (-moz-bool-pref: "zen.view.sidebar-expanded") {
   tab:not([zen-glance-tab="true"]) > .tab-stack > .tab-content::before {
-    content: counter(tab-counter) "";
+    content: var(--tab-number, counter(tab-counter));
     position: absolute;
     top: 4px;
     right: 1px;
@@ -141,7 +137,7 @@ zen-folder:has(.tab-group-label[aria-expanded="false"]) tab:not([folder-active="
   } /* Put tab numbers on the left side when compact_side="Left" (AND in compact mode) */
   :root:has(#theme-Tab-Numbers[uc-theme-compact_side="Left"]) {
     tab:not([zen-glance-tab="true"]) > .tab-stack > .tab-content::before {
-      content: counter(tab-counter) "";
+      content: var(--tab-number, counter(tab-counter));
       position: absolute;
       top: 4px;
       left: 1px;
@@ -205,32 +201,22 @@ zen-folder:has(.tab-group-label[aria-expanded="false"]) tab:not([folder-active="
 
 /* Replace absolute numbers with distance from the selected tab when requested. */
 :root:has(#theme-Tab-Numbers[uc-theme-numbering_mode="Relative"]) {
-  tab:not([zen-glance-tab="true"]) > .tab-stack > .tab-content::before,
-  tab:not([zen-glance-tab="true"]) > .tab-stack > .tab-content::after {
-    content: counter(relative-tab-after);
+  tab:not([zen-glance-tab="true"]) > .tab-stack > .tab-content {
+    --tab-number: counter(relative-tab-after);
   }
 
-  tab:not([zen-glance-tab="true"]):is([selected="true"], [visuallyselected="true"])
+  tab:not([zen-glance-tab="true"]):is([selected], [visuallyselected])
     > .tab-stack
-    > .tab-content::before,
-  tab:not([zen-glance-tab="true"]):is([selected="true"], [visuallyselected="true"])
-    > .tab-stack
-    > .tab-content::after {
-    content: "0";
+    > .tab-content {
+    --tab-number: "0";
   }
 
   tab:not([zen-glance-tab="true"]):is(
-      :has(~ :is(tab:is([selected="true"], [visuallyselected="true"]), * tab:is([selected="true"], [visuallyselected="true"]))),
-      *:has(~ :is(tab:is([selected="true"], [visuallyselected="true"]), * tab:is([selected="true"], [visuallyselected="true"]))) tab
+      :has(~ :is(tab:is([selected], [visuallyselected]), * tab:is([selected], [visuallyselected]))),
+      *:has(~ :is(tab:is([selected], [visuallyselected]), * tab:is([selected], [visuallyselected]))) tab
     )
     > .tab-stack
-    > .tab-content::before,
-  tab:not([zen-glance-tab="true"]):is(
-      :has(~ :is(tab:is([selected="true"], [visuallyselected="true"]), * tab:is([selected="true"], [visuallyselected="true"]))),
-      *:has(~ :is(tab:is([selected="true"], [visuallyselected="true"]), * tab:is([selected="true"], [visuallyselected="true"]))) tab
-    )
-    > .tab-stack
-    > .tab-content::after {
-    content: counter(relative-tab-before);
+    > .tab-content {
+    --tab-number: counter(relative-tab-before);
   }
 }
