@@ -6,7 +6,7 @@ This can help you navigate between Tabs faster by pressing Cmd + Number of the T
 The numbering mode can be changed in the mod preferences:
 
 - **Absolute (default):** shows each tab's position, matching the browser's numbered-tab shortcuts.
-- **Relative (Vim-style):** shows `0` on the selected tab and the distance to every other visible tab. These relative numbers are visual only and do not change the browser's shortcuts.
+- **Relative (Vim-style):** hides the number on the selected tab and shows the distance to every other visible tab. These relative numbers are visual only and do not change the browser's shortcuts.
 
 #### Additions: (version 1.0.8 - current version)
 

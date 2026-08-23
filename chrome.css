@@ -208,7 +208,7 @@ zen-folder:has(.tab-group-label[aria-expanded="false"]) tab:not([folder-active="
   tab:not([zen-glance-tab="true"]):is([selected], [visuallyselected])
     > .tab-stack
     > .tab-content {
-    --tab-number: "0";
+    --tab-number: none;
   }
 
   tab:not([zen-glance-tab="true"]):is(
