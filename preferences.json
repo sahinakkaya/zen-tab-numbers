@@ -1,5 +1,21 @@
 [
   {
+    "property": "uc.theme.numbering_mode",
+    "label": "Tab numbering mode",
+    "type": "dropdown",
+    "defaultValue": "Absolute",
+    "options": [
+      {
+        "label": "Absolute (default)",
+        "value": "Absolute"
+      },
+      {
+        "label": "Relative (Vim-style)",
+        "value": "Relative"
+      }
+    ]
+  },
+  {
     "property": "uc.theme.bold-text-enable.enabled",
     "label": "Make numbers Bold",
     "type": "checkbox",

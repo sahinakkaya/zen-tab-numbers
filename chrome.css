@@ -2,16 +2,42 @@
   display: none !important;
 }
 tabs {
-  counter-reset: tab-counter;
+  counter-reset: tab-counter reversed(relative-tab-before) relative-tab-after;
 } /* Automatically increment tab numbers for each tab which is essential (in the active container) or is in an active workspace */
 hbox.zen-essentials-container:not([hidden="true"]) tab:not([zen-glance-tab="true"]),
 zen-workspace[active] tab:not([zen-glance-tab="true"]) {
+  counter-increment: tab-counter relative-tab-after;
+}
+/* The selected tab is the origin for Vim-style relative numbers. */
+hbox.zen-essentials-container:not([hidden="true"])
+  tab:not([zen-glance-tab="true"]):is([selected="true"], [visuallyselected="true"]),
+zen-workspace[active]
+  tab:not([zen-glance-tab="true"]):is([selected="true"], [visuallyselected="true"]) {
   counter-increment: tab-counter;
+  counter-set: relative-tab-after 0;
+}
+/*
+ * Decrement a reverse counter only on tabs that occur before the selected tab.
+ * The second :is() branch handles tabs nested in different Zen containers/folders.
+ */
+hbox.zen-essentials-container:not([hidden="true"])
+  tab:not([zen-glance-tab="true"]):not(zen-folder:has(.tab-group-label[aria-expanded="false"]) tab:not([folder-active="true"])):is(
+    :has(~ :is(tab:is([selected="true"], [visuallyselected="true"]), * tab:is([selected="true"], [visuallyselected="true"]))),
+    *:has(~ :is(tab:is([selected="true"], [visuallyselected="true"]), * tab:is([selected="true"], [visuallyselected="true"]))) tab
+  ),
+zen-workspace[active]
+  tab:not([zen-glance-tab="true"]):not(zen-folder:has(.tab-group-label[aria-expanded="false"]) tab:not([folder-active="true"])):is(
+    :has(~ :is(tab:is([selected="true"], [visuallyselected="true"]), * tab:is([selected="true"], [visuallyselected="true"]))),
+    *:has(~ :is(tab:is([selected="true"], [visuallyselected="true"]), * tab:is([selected="true"], [visuallyselected="true"]))) tab
+  ) {
+  counter-increment: tab-counter relative-tab-before -1;
 }
 /* Stop counting tabs inside collapsed folders, except the folder's active tab */
 zen-folder:has(.tab-group-label[aria-expanded="false"]) tab:not([folder-active="true"]) {
   counter-increment: none;
-} /* Styles when the sidebar is expanded */
+}
+
+/* Styles when the sidebar is expanded */
 @media (-moz-bool-pref: "zen.view.sidebar-expanded") {
   tab:not([zen-glance-tab="true"]) > .tab-stack > .tab-content::after {
     content: counter(
@@ -175,4 +201,36 @@ zen-folder:has(.tab-group-label[aria-expanded="false"]) tab:not([folder-active="
 }
 :root:has(#theme-Tab-Numbers[uc-theme-background_shape="Circle"]) {
   --background_shape: 50%; /* Perfect Circle */
+}
+
+/* Replace absolute numbers with distance from the selected tab when requested. */
+:root:has(#theme-Tab-Numbers[uc-theme-numbering_mode="Relative"]) {
+  tab:not([zen-glance-tab="true"]) > .tab-stack > .tab-content::before,
+  tab:not([zen-glance-tab="true"]) > .tab-stack > .tab-content::after {
+    content: counter(relative-tab-after);
+  }
+
+  tab:not([zen-glance-tab="true"]):is([selected="true"], [visuallyselected="true"])
+    > .tab-stack
+    > .tab-content::before,
+  tab:not([zen-glance-tab="true"]):is([selected="true"], [visuallyselected="true"])
+    > .tab-stack
+    > .tab-content::after {
+    content: "0";
+  }
+
+  tab:not([zen-glance-tab="true"]):is(
+      :has(~ :is(tab:is([selected="true"], [visuallyselected="true"]), * tab:is([selected="true"], [visuallyselected="true"]))),
+      *:has(~ :is(tab:is([selected="true"], [visuallyselected="true"]), * tab:is([selected="true"], [visuallyselected="true"]))) tab
+    )
+    > .tab-stack
+    > .tab-content::before,
+  tab:not([zen-glance-tab="true"]):is(
+      :has(~ :is(tab:is([selected="true"], [visuallyselected="true"]), * tab:is([selected="true"], [visuallyselected="true"]))),
+      *:has(~ :is(tab:is([selected="true"], [visuallyselected="true"]), * tab:is([selected="true"], [visuallyselected="true"]))) tab
+    )
+    > .tab-stack
+    > .tab-content::after {
+    content: counter(relative-tab-before);
+  }
 }
